@@ -19,8 +19,8 @@ public class SpecCourse {
     @Column(nullable = false)
     private int courseNumber;
 
-    public SpecCourse(int id, String name, int blockNumber, int courseNumber) {
-        this.id = id;
+    // Use this constructor in com.dream_team.nsu_timetable_server.service.parser
+    public SpecCourse(String name, int blockNumber, int courseNumber) {
         this.name = name;
         this.blockNumber = blockNumber;
         this.courseNumber = courseNumber;
