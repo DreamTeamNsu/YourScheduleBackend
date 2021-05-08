@@ -1,7 +1,52 @@
 package com.dream_team.nsu_timetable_server.service;
 
+import com.dream_team.nsu_timetable_server.model.*;
+import com.dream_team.nsu_timetable_server.model.repo.GroupTimetableRepo;
+import com.dream_team.nsu_timetable_server.model.repo.GroupsRepo;
+import com.dream_team.nsu_timetable_server.model.repo.SpecCourseRepo;
+import com.dream_team.nsu_timetable_server.model.repo.SpecTimetableRepo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class FillTimetableService {
+    @Autowired
+    private GroupsRepo groupsRepo;
+    @Autowired
+    private SpecCourseRepo specCourseRepo;
+    @Autowired
+    private GroupTimetableRepo groupTimetableRepo;
+    @Autowired
+    private SpecTimetableRepo specTimetableRepo;
+
+    public void saveGroups(List<Group> groups) {
+        groupsRepo.saveAll(groups);
+    }
+
+    public void saveSpecCourses(List<SpecCourse> specCourses) {
+        specCourseRepo.saveAll(specCourses);
+    }
+
+    public void saveGroupTimetable(Map<Group, List<TimetableRecord>> timetable) {
+
+        timetable.forEach(
+                (key, value) -> groupTimetableRepo.saveAll(value
+                                .stream()
+                                .map(currentValue -> new GroupTimetable(currentValue, key))
+                                .collect(Collectors.toList()))
+        );
+    }
+
+    public void saveSpecCoursesTimetable(Map<SpecCourse, List<TimetableRecord>> timetable) {
+        timetable.forEach(
+                (key, value) -> specTimetableRepo.saveAll(value
+                        .stream()
+                        .map(currentValue -> new SpecCourseTimetable(currentValue, key))
+                        .collect(Collectors.toList()))
+        );
+    }
 }
