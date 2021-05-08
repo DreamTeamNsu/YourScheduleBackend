@@ -33,14 +33,8 @@ public class TimetableRequestsService {
         var opt = groupsRepo.findById(groupNumber);
         if(opt.isPresent()) {
             var group = opt.get();
-            // Todo is it ok?
-            var timetable = groupTimetableRepo
-                    .findAllByGroup(group)
-                    .stream()
-                    .map(GroupTimetable::getRecord)
-                    .collect(Collectors.toList());
-
             // Todo test
+            var timetable = groupTimetableRepo.findTimetableRecordsByGroup(group.getGroupNumber());
             var specList = specRepo
                     .findAllByCourseNumberOrderByBlockNumber(group.getCourseNumber())
                     .stream()

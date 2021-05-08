@@ -1,5 +1,6 @@
 package com.dream_team.nsu_timetable_server.model;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
@@ -18,10 +19,19 @@ public class TimetableCell {
         this.week = week;
     }
 
+    @Column(nullable = false)
     private int orderNumber;
+
+    @Column(nullable = false)
     private DayOfWeek dayOfWeek;
+
+    @Column(nullable = false)
     private LocalTime startTime;
+
+    @Column(nullable = false)
     private LocalTime endTime;
+
+    @Column(nullable = false)
     private Week week;
 
     public int getOrderNumber() {

@@ -8,11 +8,11 @@ public class SpecCourseTimetable {
     private int id;
 
     @Column(nullable = false)
-    TimetableRecord record;
+    private TimetableRecord record;
 
     @OneToOne
     @JoinColumn(name = "spec_id")
-    SpecCourse specCourse;
+    private SpecCourse specCourse;
 
     public SpecCourseTimetable() {
     }

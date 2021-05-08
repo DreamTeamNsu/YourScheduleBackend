@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.dream_team</groupId>
-	<artifactId>nsu_timetable_server</artifactId>
+	<artifactId>your_schedule</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>NsuTimetableServer</name>
+	<name>YourSchedule</name>
 	<description>NSU Timetable Server Project</description>
 	<properties>
 		<java.version>16</java.version>

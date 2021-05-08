@@ -1,15 +1,17 @@
 package com.dream_team.nsu_timetable_server.model;
 
-import com.dream_team.nsu_timetable_server.model.LessonType;
-
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
 public class Lesson {
 
+    @Column(nullable = false)
     private LessonType type;
+
+    @Column(nullable = false)
     private String name;
+
     private String teacher;
     private String room;
     private String building;

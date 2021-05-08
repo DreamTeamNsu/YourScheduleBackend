@@ -3,8 +3,10 @@ package com.dream_team.nsu_timetable_server.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "groups_table")
 public class Group {
 
     public Group() {
