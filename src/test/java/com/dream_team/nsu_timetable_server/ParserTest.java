@@ -16,8 +16,8 @@ public class ParserTest {
 
     @Test
     public void testParser() {
-        int size = parser.parseGroupsNumber().size();
-        System.out.println("SIZE: " + size);
-        Assertions.assertEquals(0, size);
+        parser.testParsing();
+        /*System.out.println("SIZE: " + size);
+        Assertions.assertEquals(0, size);*/
     }
 }
