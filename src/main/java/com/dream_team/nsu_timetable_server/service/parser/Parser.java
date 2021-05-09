@@ -48,7 +48,9 @@ public class Parser {
     }
 
     public void clearCaches() {
-        cachedGroups.clear();
+        if(cachedGroups != null)
+            cachedGroups.clear();
+        if(cachedSpecCourses != null)
         cachedSpecCourses.clear();
     }
 }
