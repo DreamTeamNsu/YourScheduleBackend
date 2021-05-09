@@ -23,6 +23,13 @@ public class FillTimetableService {
     @Autowired
     private SpecTimetableRepo specTimetableRepo;
 
+    public void clearAll() {
+        groupsRepo.deleteAll();
+        specCourseRepo.deleteAll();
+        groupTimetableRepo.deleteAll();
+        specTimetableRepo.deleteAll();
+    }
+
     public void saveGroups(List<Group> groups) {
         if (groups != null) {
             groupsRepo.saveAll(groups);
