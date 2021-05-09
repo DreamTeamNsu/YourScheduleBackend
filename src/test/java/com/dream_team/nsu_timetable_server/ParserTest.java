@@ -16,7 +16,7 @@ public class ParserTest {
 
     @Test
     public void testParser() {
-        parser.testParsing();
+        parser.parseTimetables();
         /*System.out.println("SIZE: " + size);
         Assertions.assertEquals(0, size);*/
     }
