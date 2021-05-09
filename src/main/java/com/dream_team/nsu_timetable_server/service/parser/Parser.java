@@ -28,8 +28,31 @@ public class Parser {
     public List<Group> parseGroupsNumber() {
         // Todo Write parsing logic
         // Todo Cache groups list into cachedGroups
-        System.out.println("TEST");
-        return List.of();
+        try{
+            if (cachedGroups == null){
+                cachedGroups = new ArrayList<>();
+            }
+
+            Element groupsTable = getGroupsTable();
+            Elements tRows = groupsTable.select("td");
+
+            int course = 0;
+            Element group;
+            for (Element row: tRows) {
+                //Course numbers
+                if (row.select("h4").size() != 0) {
+                    course++;
+                }
+                //Group numbers
+                else if ((group = row.selectFirst("a[class=\"group\"]")) != null){
+                    cachedGroups.add(new Group(Integer.parseInt(group.text()), course));
+                }
+            }
+
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+        return cachedGroups;
     }
 
     /**
@@ -86,31 +109,28 @@ public class Parser {
 
     public void testParsing() {
         /*try{
-            if (cachedSpecCourses == null){
-                cachedSpecCourses = new ArrayList<SpecCourse>();
+            if (cachedGroups == null){
+                cachedGroups = new ArrayList<>();
             }
 
-            int blockNum = 0;
-            for (int course = 3; course <= 4; course++) {
-                Element specCoursesTable_crs = getSpecСoursesTable(course);
-                Elements tRows_crs = specCoursesTable_crs.select("tr");
+            Element groupsTable = getGroupsTable();
+            Elements tRows = groupsTable.select("td");
 
-                Element name;
-                for (Element row: tRows_crs){
-                    //Block numbers
-                    if (row.select("th").size() != 0) {
-                        blockNum++;
-                    }
-                    //Spec names
-                    else if ((name = row.selectFirst("strong")) != null){
-                        String strName = name.text();
-                        cachedSpecCourses.add(new SpecCourse(strName.substring(2), blockNum, course));
-                    }
+            int course = 0;
+            Element group;
+            for (Element row: tRows) {
+                //Course numbers
+                if (row.select("h4").size() != 0) {
+                    course++;
+                }
+                //Group numbers
+                else if ((group = row.selectFirst("a[class=\"group\"]")) != null){
+                    cachedGroups.add(new Group(Integer.parseInt(group.text()), course));
                 }
             }
 
-            for (SpecCourse spc: cachedSpecCourses) {
-                System.out.println(spc.getId() +" "+ spc.getName()+" "+ spc.getBlockNumber()+" "+ spc.getCourseNumber());
+            for (Group grp: cachedGroups) {
+                System.out.println(grp.getGroupNumber()+" "+ grp.getCourseNumber());
             }
 
         }catch (IOException e) {
@@ -119,7 +139,7 @@ public class Parser {
 
     }
 
-    private Element getSpecCoursesTable(int course) throws IOException{ //todo we can add choice bw bacalavriat and maga
+    private Element getSpecCoursesTable(int course) throws IOException{ //todo we can add choice bw bachelor and maga
         int beginCourse = 3;
         int course_element = course - beginCourse;
         Document page = Jsoup.connect("https://www.nsu.ru/n/information-technologies-department/students/raspred.php").get();
@@ -127,5 +147,12 @@ public class Parser {
         Element bacCourse_i = specCoursesContainer.select("div[class=\"program-card-section-wrap\"]").get(course_element);
         Element bacCourse_i_currYear = bacCourse_i.selectFirst("div[class=\"green-panel staff_question\"]");
         return bacCourse_i_currYear.selectFirst("tbody");
+    }
+
+    private Element getGroupsTable() throws IOException{ //todo we can add choice bw bachelor, maga and aspirantura
+
+        Document page = Jsoup.connect("https://table.nsu.ru/faculty/fit").get();
+        Element bachelorContainer = page.select("table[class=\"degree_groups\"]").get(0);
+        return bachelorContainer.selectFirst("tbody");
     }
 }
