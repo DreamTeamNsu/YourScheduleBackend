@@ -19,6 +19,7 @@ public class ScheduleParsingService {
     public void fillData() {
         // Todo use normal logging
         System.out.println("Start scheduled task...");
+        fillTimetableService.clearAll();
         fillTimetableService.saveGroups(parser.parseGroupsNumber());
         fillTimetableService.saveSpecCourses(parser.parseSpecCourses());
         var res = parser.parseTimetables();
@@ -27,5 +28,4 @@ public class ScheduleParsingService {
         parser.clearCaches();
         System.out.println("End scheduled task.");
     }
-
 }
