@@ -1,11 +1,17 @@
 package com.dream_team.nsu_timetable_server.service;
 
+import com.dream_team.nsu_timetable_server.model.TimetableRecord;
 import com.dream_team.nsu_timetable_server.service.parser.Parser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ScheduleParsingService {

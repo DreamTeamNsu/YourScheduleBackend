@@ -4,6 +4,7 @@ import com.dream_team.nsu_timetable_server.model.Group;
 import com.dream_team.nsu_timetable_server.model.SpecCourse;
 import com.dream_team.nsu_timetable_server.model.parser.TimetablesParsingResult;
 import com.dream_team.nsu_timetable_server.service.parser.Parser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -14,6 +15,7 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -54,23 +56,22 @@ public class ParserTest {
 
         assertTrue(timetable.getGroupsTimetable().keySet().containsAll(groups));
 
-//        System.out.println("\n");
-//        assertDoesNotThrow(
-//                () -> System.out.println(mapper.writeValueAsString(timetable.getGroupsTimetable()
-//                        .get(new Group(18210, 3))))
-//        );
-//        System.out.println("\n");
+        System.out.println("\n");
+        assertDoesNotThrow(
+                () -> System.out.println(mapper.writeValueAsString(timetable.getGroupsTimetable()
+                        .get(new Group(18210, 3))))
+        );
+        System.out.println("\n");
 
-        assertEquals(
+        assertNotEquals(
                 timetable.getGroupsTimetable().get(new Group(18210, 3)),
                         timetable.getGroupsTimetable().get(new Group(18209, 3)));
-        System.out.println("EQUALS");
 
         assertEquals("Базы данных", timetable.getGroupsTimetable()
                 .get(new Group(18210, 3))
                 .stream().filter(record ->
                         record.getCell().getDayOfWeek().equals(DayOfWeek.FRIDAY)
-                                /*&& record.getCell().getOrderNumber() == 6*/)
+                                && record.getCell().getOrderNumber() == 6)
                 .findFirst()
                 .get()
                 .getLesson()
@@ -96,5 +97,24 @@ public class ParserTest {
                 .findFirst()
                 .get()
                 .getCell().getOrderNumber());
+
+        timetable.getSpecCoursesTimetable()
+                .get(smgmo)
+                .stream()
+                .filter(record -> record.getCell().getDayOfWeek().equals(DayOfWeek.TUESDAY))
+                .forEach(item -> {
+                    try {
+                        System.out.println("smgmo: " + mapper.writeValueAsString(item));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+                });
+
+        assertEquals(2, (int) timetable.getSpecCoursesTimetable()
+                .get(smgmo)
+                .stream()
+                .filter(record -> record.getCell().getDayOfWeek().equals(DayOfWeek.TUESDAY))
+                .count());
+
     }
 }

@@ -11,10 +11,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class Parser {
@@ -113,23 +110,19 @@ public class Parser {
         }
 
         Map<Group, List<TimetableRecord>> groupsTimetable = new HashMap<>();
-        Map<SpecCourse, List<TimetableRecord>> specCoursesTimetable = new HashMap<>();
+        Map<SpecCourse, Set<TimetableRecord>> specCoursesTimetable = new HashMap<>();
 
 
 
         //Initialize Timetables
         for (SpecCourse spc: cachedSpecCourses) {
-            specCoursesTimetable.put(spc, new ArrayList<>());
+            specCoursesTimetable.put(spc, new HashSet<>());
         }
 
         for (Group grp: cachedGroups) {
             groupsTimetable.put(grp, new ArrayList<>());
 
         }
-
-
-        try {
-
 
         try{
 
@@ -192,7 +185,7 @@ public class Parser {
                         //System.out.print(grp.getGroupNumber()+" ");
 
                         if (grp.getCourseNumber() >=3) {
-                            for (Map.Entry<SpecCourse, List<TimetableRecord>> spc : specCoursesTimetable.entrySet()) {
+                            for (Map.Entry<SpecCourse, Set<TimetableRecord>> spc : specCoursesTimetable.entrySet()) {
                                 if (spc.getKey().getName().contains(name + " --")) {
                                     spc.getValue().add(record);
                                     //System.out.println("spec " + spc.getKey().getName());

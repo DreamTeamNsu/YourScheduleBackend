@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,10 +25,10 @@ public class FillTimetableService {
     private SpecTimetableRepo specTimetableRepo;
 
     public void clearAll() {
-        groupsRepo.deleteAll();
-        specCourseRepo.deleteAll();
         groupTimetableRepo.deleteAll();
         specTimetableRepo.deleteAll();
+        groupsRepo.deleteAll();
+        specCourseRepo.deleteAll();
     }
 
     public void saveGroups(List<Group> groups) {
@@ -53,7 +54,7 @@ public class FillTimetableService {
         }
     }
 
-    public void saveSpecCoursesTimetable(Map<SpecCourse, List<TimetableRecord>> timetable) {
+    public void saveSpecCoursesTimetable(Map<SpecCourse, Set<TimetableRecord>> timetable) {
         if (timetable != null) {
             timetable.forEach(
                     (key, value) -> specTimetableRepo.saveAll(value
