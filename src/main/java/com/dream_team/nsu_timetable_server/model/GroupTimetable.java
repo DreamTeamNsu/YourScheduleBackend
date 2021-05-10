@@ -6,6 +6,7 @@ import javax.persistence.*;
 public class GroupTimetable {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
 
     @Column(nullable = false)

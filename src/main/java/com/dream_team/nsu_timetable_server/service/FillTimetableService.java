@@ -25,10 +25,12 @@ public class FillTimetableService {
     private SpecTimetableRepo specTimetableRepo;
 
     public void clearAll() {
+        System.out.println("Start clearing...");
         groupTimetableRepo.deleteAll();
         specTimetableRepo.deleteAll();
         groupsRepo.deleteAll();
         specCourseRepo.deleteAll();
+        System.out.println("Clearing completed.");
     }
 
     public void saveGroups(List<Group> groups) {

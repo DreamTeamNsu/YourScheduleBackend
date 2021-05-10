@@ -112,16 +112,9 @@ public class Parser {
         Map<Group, List<TimetableRecord>> groupsTimetable = new HashMap<>();
         Map<SpecCourse, Set<TimetableRecord>> specCoursesTimetable = new HashMap<>();
 
-
-
-        //Initialize Timetables
+        //Initialize Timetable
         for (SpecCourse spc: cachedSpecCourses) {
             specCoursesTimetable.put(spc, new HashSet<>());
-        }
-
-        for (Group grp: cachedGroups) {
-            groupsTimetable.put(grp, new ArrayList<>());
-
         }
 
         try{
