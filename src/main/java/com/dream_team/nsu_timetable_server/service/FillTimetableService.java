@@ -24,10 +24,10 @@ public class FillTimetableService {
     private SpecTimetableRepo specTimetableRepo;
 
     public void clearAll() {
-        groupsRepo.deleteAll();
-        specCourseRepo.deleteAll();
         groupTimetableRepo.deleteAll();
         specTimetableRepo.deleteAll();
+        groupsRepo.deleteAll();
+        specCourseRepo.deleteAll();
     }
 
     public void saveGroups(List<Group> groups) {
