@@ -2,6 +2,7 @@ package com.dream_team.nsu_timetable_server.model;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import java.util.Objects;
 
 @Embeddable
 public class Lesson {
@@ -65,5 +66,22 @@ public class Lesson {
 
     public void setBuilding(String building) {
         this.building = building;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Lesson)) return false;
+        Lesson lesson = (Lesson) o;
+        return type == lesson.type
+                && name.equals(lesson.name)
+                && Objects.equals(teacher, lesson.teacher)
+                && Objects.equals(room, lesson.room)
+                && Objects.equals(building, lesson.building);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, name, teacher, room, building);
     }
 }

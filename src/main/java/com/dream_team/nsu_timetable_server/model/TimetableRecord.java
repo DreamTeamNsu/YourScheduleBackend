@@ -1,6 +1,7 @@
 package com.dream_team.nsu_timetable_server.model;
 
 import javax.persistence.Embeddable;
+import java.util.Objects;
 
 @Embeddable
 public class TimetableRecord {
@@ -29,5 +30,18 @@ public class TimetableRecord {
 
     public void setLesson(Lesson lesson) {
         this.lesson = lesson;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TimetableRecord)) return false;
+        TimetableRecord that = (TimetableRecord) o;
+        return Objects.equals(cell, that.cell) && Objects.equals(lesson, that.lesson);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(cell, lesson);
     }
 }

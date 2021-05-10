@@ -5,6 +5,7 @@ import javax.persistence.*;
 @Entity
 public class SpecCourseTimetable {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
 
     @Column(nullable = false)
