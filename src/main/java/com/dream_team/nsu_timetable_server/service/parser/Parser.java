@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,13 +26,14 @@ public class Parser {
     /**
      * Parse all groups numbers.
      * Source: https://table.nsu.ru/faculty/fit
+     *
      * @return List of all groups
      */
     public List<Group> parseGroupsNumber() {
         // Todo Write parsing logic
         // Todo Cache groups list into cachedGroups
-        try{
-            if (cachedGroups == null){
+        try {
+            if (cachedGroups == null) {
                 cachedGroups = new ArrayList<>();
             }
 
@@ -42,18 +42,18 @@ public class Parser {
 
             int course = 0;
             Element group;
-            for (Element row: tRows) {
+            for (Element row : tRows) {
                 //Course numbers
                 if (row.select("h4").size() != 0) {
                     course++;
                 }
                 //Group numbers
-                else if ((group = row.selectFirst("a[class=\"group\"]")) != null){
+                else if ((group = row.selectFirst("a[class=\"group\"]")) != null) {
                     cachedGroups.add(new Group(Integer.parseInt(group.text()), course));
                 }
             }
 
-        }catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return cachedGroups;
@@ -62,13 +62,14 @@ public class Parser {
     /**
      * Parse all SpecCourses.
      * Source: https://www.nsu.ru/n/information-technologies-department/students/raspred.php
+     *
      * @return List of spec courses
      */
     public List<SpecCourse> parseSpecCourses() {
         // Todo Write parsing logic
         // Todo Cache spec courses list into cachedSpecCourses
-        try{
-            if (cachedSpecCourses == null){
+        try {
+            if (cachedSpecCourses == null) {
                 cachedSpecCourses = new ArrayList<>();
             }
 
@@ -78,19 +79,19 @@ public class Parser {
                 Elements tRows_crs = specCoursesTable_crs.select("tr");
 
                 Element name;
-                for (Element row: tRows_crs){
+                for (Element row : tRows_crs) {
                     //Block numbers
                     if (row.select("th").size() != 0) {
                         blockNum++;
                     }
                     //Spec names
-                    else if ((name = row.selectFirst("strong")) != null){
+                    else if ((name = row.selectFirst("strong")) != null) {
                         cachedSpecCourses.add(new SpecCourse(name.text().substring(3), blockNum, course));
                     }
                 }
             }
 
-        }catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return cachedSpecCourses;
@@ -99,19 +100,21 @@ public class Parser {
     /**
      * Parse timetable and create groups and spec courses table.
      * Use {@code cachedGroups} and {@code cachedSpecCourses}.
+     *
      * @return result contains groups timetable and spec courses timetable
      */
     public TimetablesParsingResult parseTimetables() {
         // Todo Write parsing logic
-        if (cachedGroups == null){
+        if (cachedGroups == null) {
             parseGroupsNumber();
         }
-        if (cachedSpecCourses == null){
+        if (cachedSpecCourses == null) {
             parseSpecCourses();
         }
 
         Map<Group, List<TimetableRecord>> groupsTimetable = new HashMap<>();
         Map<SpecCourse, List<TimetableRecord>> specCoursesTimetable = new HashMap<>();
+
 
 
         //Initialize Timetables
@@ -121,9 +124,11 @@ public class Parser {
 
         for (Group grp: cachedGroups) {
             groupsTimetable.put(grp, new ArrayList<>());
+
         }
 
 
+        try {
 
 
         try{
@@ -132,6 +137,7 @@ public class Parser {
                 groupsTimetable.put(grp, new ArrayList<>());
                 //System.out.println(group);
                 Element groupTimeTable = getGroupTimeTable(grp.getGroupNumber());
+
                 Elements ttRows = groupTimeTable.select("tr");
 
                 int paraNum = 0;
@@ -216,12 +222,11 @@ public class Parser {
                         dayNum++;
                     }
 
-
                     paraNum++;
                 }
             }
 
-        }catch (IOException e) {
+        } catch (IOException e) {
             System.err.println("Timetables Parsing Result Failed");
             e.printStackTrace();
         }
@@ -231,8 +236,10 @@ public class Parser {
     }
 
     public void clearCaches() {
-        cachedGroups.clear();
-        cachedSpecCourses.clear();
+        if (cachedGroups != null)
+            cachedGroups.clear();
+        if (cachedSpecCourses != null)
+            cachedSpecCourses.clear();
     }
 
 
@@ -241,15 +248,15 @@ public class Parser {
         if (roomAndBuildingElement == null) return roomAndBuilding;
         else {
             String text = roomAndBuildingElement.text();
-            if (text.endsWith("ГК")){
-                roomAndBuilding[0] = text.substring(0, text.length()-3);
+            if (text.endsWith("ГК")) {
+                roomAndBuilding[0] = text.substring(0, text.length() - 3);
                 roomAndBuilding[1] = "Главный корпус";
-            } else if (text.endsWith("ЛК")){
-                roomAndBuilding[0] = text.substring(0, text.length()-3);
+            } else if (text.endsWith("ЛК")) {
+                roomAndBuilding[0] = text.substring(0, text.length() - 3);
                 roomAndBuilding[1] = "Лабораторный корпус";
-            } else if (text.endsWith("Спортивный комплекс")){
+            } else if (text.endsWith("Спортивный комплекс")) {
                 roomAndBuilding[1] = "Спортивный комплекс";
-            } else if (text.length() <= 5 && text.matches(".*\\d+.*")){
+            } else if (text.length() <= 5 && text.matches(".*\\d+.*")) {
                 roomAndBuilding[0] = text;
                 roomAndBuilding[1] = "Новый корпус";
             } else {
@@ -257,10 +264,10 @@ public class Parser {
 
             }
 
-            if(roomAndBuilding[0] != null && roomAndBuilding[0].startsWith("Ауд."))
+            if (roomAndBuilding[0] != null && roomAndBuilding[0].startsWith("Ауд."))
                 roomAndBuilding[0] = roomAndBuilding[0].substring(5);
 
-            if(roomAndBuilding[1] != null && roomAndBuilding[1].startsWith("Ауд."))
+            if (roomAndBuilding[1] != null && roomAndBuilding[1].startsWith("Ауд."))
                 roomAndBuilding[1] = roomAndBuilding[1].substring(5);
 
             return roomAndBuilding;
@@ -281,12 +288,12 @@ public class Parser {
     private Week parseWeekFromElement(Element weekElement) {
         if (weekElement == null) {
             return Week.ALL;
-        } else if (weekElement.text().contains("Нечетная")){
+        } else if (weekElement.text().contains("Нечетная")) {
             return Week.ODD;
         } else return Week.EVEN;
     }
 
-    private Element getSpecCoursesTable(int course) throws IOException{ //todo we can add choice bw bachelor and maga
+    private Element getSpecCoursesTable(int course) throws IOException { //todo we can add choice bw bachelor and maga
         int beginCourse = 3;
         int course_element = course - beginCourse;
         Document page = Jsoup.connect("https://www.nsu.ru/n/information-technologies-department/students/raspred.php").get();
@@ -296,14 +303,14 @@ public class Parser {
         return bacCourse_i_currYear.selectFirst("tbody");
     }
 
-    private Element getGroupsListTable() throws IOException{ //todo we can add choice bw bachelor, maga and aspirantura
+    private Element getGroupsListTable() throws IOException { //todo we can add choice bw bachelor, maga and aspirantura
 
         Document page = Jsoup.connect("https://table.nsu.ru/faculty/fit").get();
         Element bachelorContainer = page.select("table[class=\"degree_groups\"]").get(0);
         return bachelorContainer.selectFirst("tbody");
     }
 
-    private Element getGroupTimeTable(int group) throws IOException{ //todo we can add choice bw bachelor, maga and aspirantura
+    private Element getGroupTimeTable(int group) throws IOException { //todo we can add choice bw bachelor, maga and aspirantura
         Document page = Jsoup.connect("https://table.nsu.ru/group/" + group).get();
         Element timeTable = page.selectFirst("table[class=\"time-table\"]");
         return timeTable.selectFirst("tbody");

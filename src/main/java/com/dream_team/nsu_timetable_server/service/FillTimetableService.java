@@ -23,30 +23,44 @@ public class FillTimetableService {
     @Autowired
     private SpecTimetableRepo specTimetableRepo;
 
+    public void clearAll() {
+        groupsRepo.deleteAll();
+        specCourseRepo.deleteAll();
+        groupTimetableRepo.deleteAll();
+        specTimetableRepo.deleteAll();
+    }
+
     public void saveGroups(List<Group> groups) {
-        groupsRepo.saveAll(groups);
+        if (groups != null) {
+            groupsRepo.saveAll(groups);
+        }
     }
 
     public void saveSpecCourses(List<SpecCourse> specCourses) {
-        specCourseRepo.saveAll(specCourses);
+        if (specCourses != null) {
+            specCourseRepo.saveAll(specCourses);
+        }
     }
 
     public void saveGroupTimetable(Map<Group, List<TimetableRecord>> timetable) {
-
-        timetable.forEach(
-                (key, value) -> groupTimetableRepo.saveAll(value
-                                .stream()
-                                .map(currentValue -> new GroupTimetable(currentValue, key))
-                                .collect(Collectors.toList()))
-        );
+        if (timetable != null) {
+            timetable.forEach(
+                    (key, value) -> groupTimetableRepo.saveAll(value
+                            .stream()
+                            .map(currentValue -> new GroupTimetable(currentValue, key))
+                            .collect(Collectors.toList()))
+            );
+        }
     }
 
     public void saveSpecCoursesTimetable(Map<SpecCourse, List<TimetableRecord>> timetable) {
-        timetable.forEach(
-                (key, value) -> specTimetableRepo.saveAll(value
-                        .stream()
-                        .map(currentValue -> new SpecCourseTimetable(currentValue, key))
-                        .collect(Collectors.toList()))
-        );
+        if (timetable != null) {
+            timetable.forEach(
+                    (key, value) -> specTimetableRepo.saveAll(value
+                            .stream()
+                            .map(currentValue -> new SpecCourseTimetable(currentValue, key))
+                            .collect(Collectors.toList()))
+            );
+        }
     }
 }
