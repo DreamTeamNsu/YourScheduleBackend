@@ -11,6 +11,7 @@ import com.dream_team.nsu_timetable_server.model.repo.SpecTimetableRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -61,5 +62,24 @@ public class TimetableRequestsService {
                     .collect(Collectors.toList());
         } else throw new IllegalArgumentException("Wrong spec id");
     }
+
+    public List<TimetableRecord> getSpecTimetable(List<Integer> specCourses) {
+        List<TimetableRecord> timetable = new ArrayList<>();
+        specCourses.forEach(specId -> {
+            var opt = specRepo.findById(specId);
+            if (opt.isPresent()) {
+                var spec = opt.get();
+                timetable.addAll(
+                        specTimetableRepo
+                        .findAllBySpecCourse(spec)
+                        .stream()
+                        .map(SpecCourseTimetable::getRecord)
+                        .collect(Collectors.toList())
+                );
+            } else throw new IllegalArgumentException("Wrong spec id");
+        });
+        return timetable;
+    }
+
 
 }

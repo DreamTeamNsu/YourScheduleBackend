@@ -42,4 +42,9 @@ public class TimetableRequestsController {
     List<TimetableRecord> getSpecTimetable(@RequestParam int specId) {
         return service.getSpecTimetable(specId);
     }
+
+    @GetMapping("/get/spec-array-timetable")
+    public @ResponseBody List<TimetableRecord> getSpecArrayTimetable(@RequestBody List<Integer> specCourses) {
+        return service.getSpecTimetable(specCourses);
+    }
 }
