@@ -115,28 +115,29 @@ public class Parser {
         Map<Group, List<TimetableRecord>> groupsTimetable = new HashMap<>();
         Map<SpecCourse, List<TimetableRecord>> specCoursesTimetable = new HashMap<>();
 
-        List<TimetableRecord> groupsRecordsList = new ArrayList<>();
-        List<TimetableRecord> specCoursesRecordsList = new ArrayList<>();
 
-        // List<String> specCoursesList = new ArrayList<>();
-        List<Integer> groupsList = new ArrayList<>();
 
-        for (SpecCourse spc : cachedSpecCourses) {
-            specCoursesTimetable.put(spc, specCoursesRecordsList);
-            //specCoursesList.add(spc.getName());
+        //Initialize Timetables
+        for (SpecCourse spc: cachedSpecCourses) {
+            specCoursesTimetable.put(spc, new ArrayList<>());
         }
 
-        for (Group grp : cachedGroups) {
-            groupsTimetable.put(grp, groupsRecordsList);
-            groupsList.add(grp.getGroupNumber());
+        for (Group grp: cachedGroups) {
+            groupsTimetable.put(grp, new ArrayList<>());
+
         }
 
 
         try {
 
-            for (int group : groupsList) {
 
-                Element groupTimeTable = getGroupTimeTable(group);
+        try{
+
+            for (Group grp: cachedGroups) {
+                groupsTimetable.put(grp, new ArrayList<>());
+                //System.out.println(group);
+                Element groupTimeTable = getGroupTimeTable(grp.getGroupNumber());
+
                 Elements ttRows = groupTimeTable.select("tr");
 
                 int paraNum = 0;
@@ -188,16 +189,22 @@ public class Parser {
 
                         boolean isInSpecCourses = false;
 
-                        for (SpecCourse spc : cachedSpecCourses) {
-                            if (spc.getName().contains(name)) {
-                                specCoursesRecordsList.add(record);
-                                isInSpecCourses = true;
-                                break;
+                        //System.out.print(grp.getGroupNumber()+" ");
+
+                        if (grp.getCourseNumber() >=3) {
+                            for (Map.Entry<SpecCourse, List<TimetableRecord>> spc : specCoursesTimetable.entrySet()) {
+                                if (spc.getKey().getName().contains(name + " --")) {
+                                    spc.getValue().add(record);
+                                    //System.out.println("spec " + spc.getKey().getName());
+                                    isInSpecCourses = true;
+                                    break;
+                                }
                             }
                         }
 
                         if (!isInSpecCourses) {
-                            groupsRecordsList.add(record);
+                            groupsTimetable.get(grp).add(record);
+                            //System.out.println("group");
                         }
 
                     /*System.out.println(timetableCell.getOrderNumber() +" "
