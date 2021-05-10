@@ -200,7 +200,7 @@ public class Parser {
                             groupsRecordsList.add(record);
                         }
 
-                    System.out.println(timetableCell.getOrderNumber() +" "
+                    /*System.out.println(timetableCell.getOrderNumber() +" "
                             + timetableCell.getDayOfWeek() +" "
                             + timetableCell.getStartTime() +" "
                             + timetableCell.getEndTime() +" "
@@ -213,7 +213,7 @@ public class Parser {
                             +lesson.getBuilding());
 
                         dayNum++;
-                    }
+                    }*/
 
 
                     paraNum++;
