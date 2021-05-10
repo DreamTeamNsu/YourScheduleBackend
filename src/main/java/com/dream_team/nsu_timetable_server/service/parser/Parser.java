@@ -134,17 +134,15 @@ public class Parser {
 
         try{
 
-            //int group = 18210;
-
             for (int group: groupsList) {
-
 
                 Element groupTimeTable = getGroupTimeTable(group);
                 Elements ttRows = groupTimeTable.select("tr");
 
-
                 int paraNum = 0;
+
                 for (Element paraRow : ttRows) {
+
                     if (paraNum == 0) {
                         paraNum++;
                         continue;
@@ -157,11 +155,13 @@ public class Parser {
                     LocalTime endTime = startTime.plusHours(1).plusMinutes(35);
 
                     int dayNum = 1;
+
                     for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
                         //Skip SUNDAY
                         if (dayOfWeek == DayOfWeek.SUNDAY) break;
 
                         Element currentCellContent = ttParaColumns.get(dayNum).selectFirst("div[class=\"cell\"]");
+
                         //Skip empty cells
                         if (currentCellContent == null) {
                             //System.out.println("null");
@@ -169,10 +169,12 @@ public class Parser {
                             continue;
                         }
 
+                        //Get TimetableCell
                         Element weekElement = currentCellContent.selectFirst("div[class=\"week\"]");
                         Week week = parseWeekFromElement(weekElement);
                         TimetableCell timetableCell = new TimetableCell(paraNum, dayOfWeek, startTime, endTime, week);
 
+                        //Get Lesson
                         Element lessonTypeElement = currentCellContent.getElementsByAttributeValueContaining("class", "type").first();
                         LessonType lessonType = parseLessonTypeFromElement(lessonTypeElement);
                         String name = currentCellContent.selectFirst("div[class=\"subject\"]").attr("title");
@@ -182,8 +184,9 @@ public class Parser {
                         String[] roomAndBuilding = parseRoomAndBuildingFromElement(roomAndBuildingElement);
                         Lesson lesson = new Lesson(lessonType, name, teacher, roomAndBuilding[0], roomAndBuilding[1]);
 
-                        boolean isInSpecCourses = false;
                         TimetableRecord record = new TimetableRecord(timetableCell, lesson);
+
+                        boolean isInSpecCourses = false;
 
                         for (SpecCourse spc : cachedSpecCourses) {
                             if (spc.getName().contains(name)) {
@@ -197,7 +200,7 @@ public class Parser {
                             groupsRecordsList.add(record);
                         }
 
-                    /*System.out.println(timetableCell.getOrderNumber() +" "
+                    System.out.println(timetableCell.getOrderNumber() +" "
                             + timetableCell.getDayOfWeek() +" "
                             + timetableCell.getStartTime() +" "
                             + timetableCell.getEndTime() +" "
@@ -207,7 +210,7 @@ public class Parser {
                             +lesson.getName()+" "
                             +lesson.getTeacher()+" "
                             +lesson.getRoom()+" "
-                            +lesson.getBuilding());*/
+                            +lesson.getBuilding());
 
                         dayNum++;
                     }
@@ -239,14 +242,18 @@ public class Parser {
             String text = roomAndBuildingElement.text();
             if (text.endsWith("ГК")){
                 roomAndBuilding[0] = text.substring(0, text.length()-3);
-                roomAndBuilding[1] = "ГК";
+                roomAndBuilding[1] = "Главный корпус";
             } else if (text.endsWith("ЛК")){
                 roomAndBuilding[0] = text.substring(0, text.length()-3);
-                roomAndBuilding[1] = "ЛК";
+                roomAndBuilding[1] = "Лабораторный корпус";
             } else if (text.endsWith("Спортивный комплекс")){
                 roomAndBuilding[1] = "Спортивный комплекс";
+            } else if (text.length() <= 5 && text.matches(".*\\d+.*")){
+                roomAndBuilding[0] = text;
+                roomAndBuilding[1] = "Новый корпус";
             } else {
                 roomAndBuilding[1] = text;
+
             }
 
             if(roomAndBuilding[0] != null && roomAndBuilding[0].startsWith("Ауд."))
