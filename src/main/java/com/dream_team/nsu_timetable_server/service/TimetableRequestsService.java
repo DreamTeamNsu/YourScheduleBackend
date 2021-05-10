@@ -8,6 +8,7 @@ import com.dream_team.nsu_timetable_server.model.repo.GroupTimetableRepo;
 import com.dream_team.nsu_timetable_server.model.repo.GroupsRepo;
 import com.dream_team.nsu_timetable_server.model.repo.SpecCourseRepo;
 import com.dream_team.nsu_timetable_server.model.repo.SpecTimetableRepo;
+import com.dream_team.nsu_timetable_server.model.response.GroupTimetableResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +33,20 @@ public class TimetableRequestsService {
         return groupsRepo.findAll();
     }
 
-    public List<TimetableRecord> getGroupTimetable(int groupNumber) {
+    public GroupTimetableResponse getGroupTimetable(int groupNumber) {
+        var opt = groupsRepo.findById(groupNumber);
+        if (opt.isPresent()) {
+            var group = opt.get();
+            var timetable = groupTimetableRepo.findTimetableRecordsByGroup(group.getGroupNumber());
+            var spec = specRepo
+                    .findAllByCourseNumberOrderByBlockNumber(group.getCourseNumber())
+                    .stream()
+                    .collect(Collectors.groupingBy(SpecCourse::getBlockNumber));
+            return new GroupTimetableResponse(timetable, spec);
+        } else throw new IllegalArgumentException("Wrong group number");
+    }
+
+    public List<TimetableRecord> getOnlyGroupTimetable(int groupNumber) {
         var opt = groupsRepo.findById(groupNumber);
         if (opt.isPresent()) {
             var group = opt.get();
