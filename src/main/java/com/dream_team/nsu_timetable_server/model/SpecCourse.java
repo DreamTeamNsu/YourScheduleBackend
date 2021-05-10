@@ -1,6 +1,7 @@
 package com.dream_team.nsu_timetable_server.model;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class SpecCourse {
@@ -60,5 +61,18 @@ public class SpecCourse {
 
     public void setCourseNumber(int courseNumber) {
         this.courseNumber = courseNumber;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SpecCourse)) return false;
+        SpecCourse that = (SpecCourse) o;
+        return id == that.id && name.equals(that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
     }
 }
