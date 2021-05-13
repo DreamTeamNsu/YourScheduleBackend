@@ -23,12 +23,13 @@ public class ScheduleParsingService {
         // Todo use normal logging
         System.out.println("Start scheduled task...");
         fillTimetableService.clearAll();
-        fillTimetableService.saveGroups(parser.parseGroupsNumber());
-        fillTimetableService.saveSpecCourses(parser.parseSpecCourses());
-        var res = parser.parseTimetables();
+        var groups = parser.parseGroupsNumber();
+        fillTimetableService.saveGroups(groups);
+        var specCourses = parser.parseSpecCourses();
+        fillTimetableService.saveSpecCourses(specCourses);
+        var res = parser.parseTimetables(specCourses, groups);
         fillTimetableService.saveGroupTimetable(res.getGroupsTimetable());
         fillTimetableService.saveSpecCoursesTimetable(res.getSpecCoursesTimetable());
-        parser.clearCaches();
         System.out.println("End scheduled task.");
     }
 }
