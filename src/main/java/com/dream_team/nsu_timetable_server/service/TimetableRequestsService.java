@@ -12,6 +12,7 @@ import com.dream_team.nsu_timetable_server.model.response.GroupTimetableResponse
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -29,10 +30,12 @@ public class TimetableRequestsService {
     @Autowired
     private SpecTimetableRepo specTimetableRepo;
 
+    @Transactional
     public Iterable<Group> getGroups() {
         return groupsRepo.findAll();
     }
 
+    @Transactional
     public GroupTimetableResponse getGroupTimetable(int groupNumber) {
         var opt = groupsRepo.findById(groupNumber);
         if (opt.isPresent()) {
@@ -46,6 +49,7 @@ public class TimetableRequestsService {
         } else throw new IllegalArgumentException("Wrong group number");
     }
 
+    @Transactional
     public List<TimetableRecord> getOnlyGroupTimetable(int groupNumber) {
         var opt = groupsRepo.findById(groupNumber);
         if (opt.isPresent()) {
@@ -54,6 +58,7 @@ public class TimetableRequestsService {
         } else throw new IllegalArgumentException("Wrong group number");
     }
 
+    @Transactional
     public Map<Integer, List<SpecCourse>> getSpecCourses(int groupNumber) {
         var opt = groupsRepo.findById(groupNumber);
         if (opt.isPresent()) {
@@ -65,6 +70,7 @@ public class TimetableRequestsService {
         } else throw new IllegalArgumentException("Wrong group number");
     }
 
+    @Transactional
     public List<TimetableRecord> getSpecTimetable(int specId) {
         var opt = specRepo.findById(specId);
         if (opt.isPresent()) {
@@ -77,6 +83,7 @@ public class TimetableRequestsService {
         } else throw new IllegalArgumentException("Wrong spec id");
     }
 
+    @Transactional
     public List<TimetableRecord> getSpecTimetable(List<Integer> specCourses) {
         List<TimetableRecord> timetable = new ArrayList<>();
         specCourses.forEach(specId -> {
@@ -94,6 +101,4 @@ public class TimetableRequestsService {
         });
         return timetable;
     }
-
-
 }

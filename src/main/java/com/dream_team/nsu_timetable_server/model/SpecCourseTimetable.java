@@ -1,45 +1,30 @@
 package com.dream_team.nsu_timetable_server.model;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+
 import javax.persistence.*;
 
+@Data
+@NoArgsConstructor
 @Entity
 public class SpecCourseTimetable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
 
+    @NonNull
     @Column(nullable = false)
     private TimetableRecord record;
 
-    @OneToOne
+    @NonNull
+    @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "spec_id")
     private SpecCourse specCourse;
 
-    public SpecCourseTimetable() {
-    }
-
-    public SpecCourseTimetable(TimetableRecord record, SpecCourse specCourse) {
+    public SpecCourseTimetable(@NonNull TimetableRecord record, @NonNull SpecCourse specCourse) {
         this.record = record;
         this.specCourse = specCourse;
-    }
-
-    public TimetableRecord getRecord() {
-        return record;
-    }
-
-    public void setRecord(TimetableRecord record) {
-        this.record = record;
-    }
-
-    public SpecCourse getSpecCourse() {
-        return specCourse;
-    }
-
-    public void setSpecCourse(SpecCourse specCourse) {
-        this.specCourse = specCourse;
-    }
-
-    public int getId() {
-        return id;
     }
 }
