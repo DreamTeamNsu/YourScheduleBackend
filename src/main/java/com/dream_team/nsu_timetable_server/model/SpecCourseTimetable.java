@@ -19,7 +19,7 @@ public class SpecCourseTimetable {
     private TimetableRecord record;
 
     @NonNull
-    @OneToOne(cascade = CascadeType.MERGE)
+    @OneToOne
     @JoinColumn(name = "spec_id")
     private SpecCourse specCourse;
 

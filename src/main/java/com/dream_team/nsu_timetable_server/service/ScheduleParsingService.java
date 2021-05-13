@@ -18,6 +18,7 @@ public class ScheduleParsingService {
 
     @EventListener(ApplicationReadyEvent.class)
     @Scheduled(cron = "0 0 4 * * 0-6")
+    @Transactional
     public void fillData() {
         // Todo use normal logging
         System.out.println("Start scheduled task...");
