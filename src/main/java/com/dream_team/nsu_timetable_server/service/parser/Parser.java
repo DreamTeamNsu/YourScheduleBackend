@@ -22,13 +22,13 @@ public class Parser {
      *
      * @return List of all groups
      */
-    public List<Group> parseGroupsNumber() {
+    public List<Group> parseGroupsNumber(Document page) {
         // Todo Write parsing logic
         // Todo Cache groups list into cachedGroups
         List<Group> groups = new ArrayList<>();
         try {
 
-            Element groupsTable = getGroupsListTable();
+            Element groupsTable = getGroupsListTable(page);
             Elements tRows = groupsTable.select("td");
 
             int course = 0;
@@ -56,13 +56,13 @@ public class Parser {
      *
      * @return List of spec courses
      */
-    public List<SpecCourse> parseSpecCourses() {
+    public List<SpecCourse> parseSpecCourses(Document page) {
         List<SpecCourse> specCourses =  new ArrayList<>();
         try {
 
             int blockNum = 0;
-            for (int course = 3; course <= 4; course++) {
-                Element specCoursesTable_crs = getSpecCoursesTable(course);
+            for (int course = 3; course <= 4; course++) { //todo убрать хардкод (это начальный курс)
+                Element specCoursesTable_crs = getSpecCoursesTable(course, page);
                 Elements tRows_crs = specCoursesTable_crs.select("tr");
 
                 Element name;
@@ -90,7 +90,7 @@ public class Parser {
      *
      * @return result contains groups timetable and spec courses timetable
      */
-    public TimetablesParsingResult parseTimetables(List<SpecCourse> specCourses, List<Group> groups) {
+    public TimetablesParsingResult parseTimetables(List<SpecCourse> specCourses, Map<Group, Document> groupDocumentMap) {
 
         Map<Group, List<TimetableRecord>> groupsTimetable = new HashMap<>();
         Map<SpecCourse, Set<TimetableRecord>> specCoursesTimetable = new HashMap<>();
@@ -102,10 +102,10 @@ public class Parser {
 
         try{
 
-            for (Group grp: groups) {
+            for (Group grp: groupDocumentMap.keySet()) {
                 groupsTimetable.put(grp, new ArrayList<>());
                 //System.out.println(group);
-                Element groupTimeTable = getGroupTimeTable(grp.getGroupNumber());
+                Element groupTimeTable = getGroupTimeTable(grp.getGroupNumber(), groupDocumentMap.get(grp));
 
                 Elements ttRows = groupTimeTable.select("tr");
 
@@ -254,25 +254,24 @@ public class Parser {
         } else return Week.EVEN;
     }
 
-    private Element getSpecCoursesTable(int course) throws IOException { //todo we can add choice bw bachelor and maga
-        int beginCourse = 3;
+    private Element getSpecCoursesTable(int course, Document page) throws IOException { //todo we can add choice bw bachelor and maga
+        int beginCourse = 3; //todo убрать хардкод (это начальный курс)
         int course_element = course - beginCourse;
-        Document page = Jsoup.connect("https://www.nsu.ru/n/information-technologies-department/students/raspred.php").get();
+        //Document page = Jsoup.connect("https://www.nsu.ru/n/information-technologies-department/students/raspred.php").get();
         Element specCoursesContainer = page.select("div[class=\"col-lg-9 col-md-8 col-sm-7 content-bar\"]").first();
-        Element bacCourse_i = specCoursesContainer.select("div[class=\"program-card-section-wrap\"]").get(course_element);
-        Element bacCourse_i_currYear = bacCourse_i.selectFirst("div[class=\"green-panel staff_question\"]");
-        return bacCourse_i_currYear.selectFirst("tbody");
+        Element bacCourseElement = specCoursesContainer.select("div[class=\"program-card-section-wrap\"]").get(course_element);
+        Element bacCourseCurrYearElement = bacCourseElement.selectFirst("div[class=\"green-panel staff_question\"]");
+        return bacCourseCurrYearElement.selectFirst("tbody");
     }
 
-    private Element getGroupsListTable() throws IOException { //todo we can add choice bw bachelor, maga and aspirantura
-
-        Document page = Jsoup.connect("https://table.nsu.ru/faculty/fit").get();
+    private Element getGroupsListTable(Document page) throws IOException { //todo we can add choice bw bachelor, maga and aspirantura
+        //Document page = Jsoup.connect("https://table.nsu.ru/faculty/fit").get();
         Element bachelorContainer = page.select("table[class=\"degree_groups\"]").get(0);
         return bachelorContainer.selectFirst("tbody");
     }
 
-    private Element getGroupTimeTable(int group) throws IOException { //todo we can add choice bw bachelor, maga and aspirantura
-        Document page = Jsoup.connect("https://table.nsu.ru/group/" + group).get();
+    private Element getGroupTimeTable(int group, Document page) throws IOException { //todo we can add choice bw bachelor, maga and aspirantura
+        //Document page = Jsoup.connect("https://table.nsu.ru/group/" + group).get();
         Element timeTable = page.selectFirst("table[class=\"time-table\"]");
         return timeTable.selectFirst("tbody");
     }
