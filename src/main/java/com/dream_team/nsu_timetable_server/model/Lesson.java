@@ -1,69 +1,35 @@
 package com.dream_team.nsu_timetable_server.model;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import java.util.Objects;
 
+@Data
+@NoArgsConstructor
 @Embeddable
 public class Lesson {
 
     @Column(nullable = false)
+    @NonNull
     private LessonType type;
 
     @Column(nullable = false)
+    @NonNull
     private String name;
 
     private String teacher;
     private String room;
     private String building;
 
-    public Lesson(LessonType type, String name, String teacher, String room, String building) {
+    public Lesson(@NonNull LessonType type, @NonNull String name, String teacher, String room, String building) {
         this.type = type;
         this.name = name;
         this.teacher = teacher;
         this.room = room;
-        this.building = building;
-    }
-
-    public Lesson() {
-    }
-
-    public LessonType getType() {
-        return type;
-    }
-
-    public void setType(LessonType type) {
-        this.type = type;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getTeacher() {
-        return teacher;
-    }
-
-    public void setTeacher(String teacher) {
-        this.teacher = teacher;
-    }
-
-    public String getRoom() {
-        return room;
-    }
-
-    public void setRoom(String room) {
-        this.room = room;
-    }
-
-    public String getBuilding() {
-        return building;
-    }
-
-    public void setBuilding(String building) {
         this.building = building;
     }
 }

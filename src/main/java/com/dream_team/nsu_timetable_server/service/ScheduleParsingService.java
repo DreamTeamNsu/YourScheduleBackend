@@ -7,6 +7,8 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
 public class ScheduleParsingService {
     @Autowired
@@ -16,16 +18,18 @@ public class ScheduleParsingService {
 
     @EventListener(ApplicationReadyEvent.class)
     @Scheduled(cron = "0 0 4 * * 0-6")
+    @Transactional
     public void fillData() {
         // Todo use normal logging
         System.out.println("Start scheduled task...");
         fillTimetableService.clearAll();
-        fillTimetableService.saveGroups(parser.parseGroupsNumber());
-        fillTimetableService.saveSpecCourses(parser.parseSpecCourses());
-        var res = parser.parseTimetables();
+        var groups = parser.parseGroupsNumber();
+        fillTimetableService.saveGroups(groups);
+        var specCourses = parser.parseSpecCourses();
+        fillTimetableService.saveSpecCourses(specCourses);
+        var res = parser.parseTimetables(specCourses, groups);
         fillTimetableService.saveGroupTimetable(res.getGroupsTimetable());
         fillTimetableService.saveSpecCoursesTimetable(res.getSpecCoursesTimetable());
-        parser.clearCaches();
         System.out.println("End scheduled task.");
     }
 }

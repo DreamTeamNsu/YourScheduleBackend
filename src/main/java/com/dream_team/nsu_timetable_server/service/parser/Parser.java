@@ -11,17 +11,10 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class Parser {
-
-    // Fields to cache some data
-    private List<SpecCourse> cachedSpecCourses;
-    private List<Group> cachedGroups;
 
     /**
      * Parse all groups numbers.
@@ -32,10 +25,8 @@ public class Parser {
     public List<Group> parseGroupsNumber() {
         // Todo Write parsing logic
         // Todo Cache groups list into cachedGroups
+        List<Group> groups = new ArrayList<>();
         try {
-            if (cachedGroups == null) {
-                cachedGroups = new ArrayList<>();
-            }
 
             Element groupsTable = getGroupsListTable();
             Elements tRows = groupsTable.select("td");
@@ -49,14 +40,14 @@ public class Parser {
                 }
                 //Group numbers
                 else if ((group = row.selectFirst("a[class=\"group\"]")) != null) {
-                    cachedGroups.add(new Group(Integer.parseInt(group.text()), course));
+                    groups.add(new Group(Integer.parseInt(group.text()), course));
                 }
             }
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return cachedGroups;
+        return groups;
     }
 
     /**
@@ -66,12 +57,8 @@ public class Parser {
      * @return List of spec courses
      */
     public List<SpecCourse> parseSpecCourses() {
-        // Todo Write parsing logic
-        // Todo Cache spec courses list into cachedSpecCourses
+        List<SpecCourse> specCourses =  new ArrayList<>();
         try {
-            if (cachedSpecCourses == null) {
-                cachedSpecCourses = new ArrayList<>();
-            }
 
             int blockNum = 0;
             for (int course = 3; course <= 4; course++) {
@@ -86,7 +73,7 @@ public class Parser {
                     }
                     //Spec names
                     else if ((name = row.selectFirst("strong")) != null) {
-                        cachedSpecCourses.add(new SpecCourse(name.text().substring(3), blockNum, course));
+                        specCourses.add(new SpecCourse(name.text().substring(3), blockNum, course));
                     }
                 }
             }
@@ -94,7 +81,7 @@ public class Parser {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return cachedSpecCourses;
+        return specCourses;
     }
 
     /**
@@ -103,37 +90,19 @@ public class Parser {
      *
      * @return result contains groups timetable and spec courses timetable
      */
-    public TimetablesParsingResult parseTimetables() {
-        // Todo Write parsing logic
-        if (cachedGroups == null) {
-            parseGroupsNumber();
-        }
-        if (cachedSpecCourses == null) {
-            parseSpecCourses();
-        }
+    public TimetablesParsingResult parseTimetables(List<SpecCourse> specCourses, List<Group> groups) {
 
         Map<Group, List<TimetableRecord>> groupsTimetable = new HashMap<>();
-        Map<SpecCourse, List<TimetableRecord>> specCoursesTimetable = new HashMap<>();
+        Map<SpecCourse, Set<TimetableRecord>> specCoursesTimetable = new HashMap<>();
 
-
-
-        //Initialize Timetables
-        for (SpecCourse spc: cachedSpecCourses) {
-            specCoursesTimetable.put(spc, new ArrayList<>());
+        //Initialize Timetable
+        for (SpecCourse spc: specCourses) {
+            specCoursesTimetable.put(spc, new HashSet<>());
         }
-
-        for (Group grp: cachedGroups) {
-            groupsTimetable.put(grp, new ArrayList<>());
-
-        }
-
-
-        try {
-
 
         try{
 
-            for (Group grp: cachedGroups) {
+            for (Group grp: groups) {
                 groupsTimetable.put(grp, new ArrayList<>());
                 //System.out.println(group);
                 Element groupTimeTable = getGroupTimeTable(grp.getGroupNumber());
@@ -192,7 +161,7 @@ public class Parser {
                         //System.out.print(grp.getGroupNumber()+" ");
 
                         if (grp.getCourseNumber() >=3) {
-                            for (Map.Entry<SpecCourse, List<TimetableRecord>> spc : specCoursesTimetable.entrySet()) {
+                            for (Map.Entry<SpecCourse, Set<TimetableRecord>> spc : specCoursesTimetable.entrySet()) {
                                 if (spc.getKey().getName().contains(name + " --")) {
                                     spc.getValue().add(record);
                                     //System.out.println("spec " + spc.getKey().getName());
@@ -234,14 +203,6 @@ public class Parser {
 
         return new TimetablesParsingResult(groupsTimetable, specCoursesTimetable);
     }
-
-    public void clearCaches() {
-        if (cachedGroups != null)
-            cachedGroups.clear();
-        if (cachedSpecCourses != null)
-            cachedSpecCourses.clear();
-    }
-
 
     private String[] parseRoomAndBuildingFromElement(Element roomAndBuildingElement) {
         String[] roomAndBuilding = new String[]{null, null};

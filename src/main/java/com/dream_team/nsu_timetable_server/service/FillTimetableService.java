@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,21 +25,25 @@ public class FillTimetableService {
     private SpecTimetableRepo specTimetableRepo;
 
     public void clearAll() {
-        groupsRepo.deleteAll();
-        specCourseRepo.deleteAll();
+        System.out.println("Start clearing...");
         groupTimetableRepo.deleteAll();
         specTimetableRepo.deleteAll();
+        groupsRepo.deleteAll();
+        specCourseRepo.deleteAll();
+        System.out.println("Clearing completed.");
     }
 
     public void saveGroups(List<Group> groups) {
         if (groups != null) {
             groupsRepo.saveAll(groups);
+            groupsRepo.flush();
         }
     }
 
     public void saveSpecCourses(List<SpecCourse> specCourses) {
         if (specCourses != null) {
             specCourseRepo.saveAll(specCourses);
+            specCourseRepo.flush();
         }
     }
 
@@ -50,10 +55,11 @@ public class FillTimetableService {
                             .map(currentValue -> new GroupTimetable(currentValue, key))
                             .collect(Collectors.toList()))
             );
+            groupTimetableRepo.flush();
         }
     }
 
-    public void saveSpecCoursesTimetable(Map<SpecCourse, List<TimetableRecord>> timetable) {
+    public void saveSpecCoursesTimetable(Map<SpecCourse, Set<TimetableRecord>> timetable) {
         if (timetable != null) {
             timetable.forEach(
                     (key, value) -> specTimetableRepo.saveAll(value
@@ -61,6 +67,7 @@ public class FillTimetableService {
                             .map(currentValue -> new SpecCourseTimetable(currentValue, key))
                             .collect(Collectors.toList()))
             );
+            specTimetableRepo.flush();
         }
     }
 }
