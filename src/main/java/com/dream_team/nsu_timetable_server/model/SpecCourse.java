@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Data
 @NoArgsConstructor

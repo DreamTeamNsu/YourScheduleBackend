@@ -15,14 +15,18 @@ import java.util.stream.Collectors;
 
 @Service
 public class FillTimetableService {
+    private final GroupsRepo groupsRepo;
+    private final SpecCourseRepo specCourseRepo;
+    private final GroupTimetableRepo groupTimetableRepo;
+    private final SpecTimetableRepo specTimetableRepo;
+
     @Autowired
-    private GroupsRepo groupsRepo;
-    @Autowired
-    private SpecCourseRepo specCourseRepo;
-    @Autowired
-    private GroupTimetableRepo groupTimetableRepo;
-    @Autowired
-    private SpecTimetableRepo specTimetableRepo;
+    public FillTimetableService(GroupsRepo groupsRepo, SpecCourseRepo specCourseRepo, GroupTimetableRepo groupTimetableRepo, SpecTimetableRepo specTimetableRepo) {
+        this.groupsRepo = groupsRepo;
+        this.specCourseRepo = specCourseRepo;
+        this.groupTimetableRepo = groupTimetableRepo;
+        this.specTimetableRepo = specTimetableRepo;
+    }
 
     public void clearAll() {
         System.out.println("Start clearing...");
