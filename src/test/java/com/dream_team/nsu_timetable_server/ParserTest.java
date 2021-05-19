@@ -28,6 +28,7 @@ public class ParserTest {
         parser = new Parser();
     }
 
+    // Todo write normal tests.
     @Test
     public void testParser() {
 
@@ -37,9 +38,11 @@ public class ParserTest {
 
         assertTimeout(Duration.of(1, ChronoUnit.MINUTES),
                 () -> {
-                    groups.addAll(parser.parseGroupsNumber());
-                    specCourses.addAll(parser.parseSpecCourses());
-                    var tt = parser.parseTimetables();
+                    var parsedGroups = parser.parseGroupsNumber();
+                    groups.addAll(parsedGroups);
+                    var parsedSpecCourses = parser.parseSpecCourses();
+                    specCourses.addAll(parsedSpecCourses);
+                    var tt = parser.parseTimetables(parsedSpecCourses, parsedGroups);
                     timetable.setGroupsTimetable(tt.getGroupsTimetable());
                     timetable.setSpecCoursesTimetable(tt.getSpecCoursesTimetable());
                 }

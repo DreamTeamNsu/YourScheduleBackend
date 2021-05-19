@@ -1,8 +1,14 @@
 package com.dream_team.nsu_timetable_server.model;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+
 import javax.persistence.*;
 import java.util.Objects;
 
+@Data
+@NoArgsConstructor
 @Entity
 public class SpecCourse {
 
@@ -10,69 +16,19 @@ public class SpecCourse {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
 
+    @NonNull
     @Column(nullable = false)
     private String name;
 
     @Column(nullable = false)
-    // TODO Just int numbers?
     private int blockNumber;
 
     @Column(nullable = false)
     private int courseNumber;
 
-    // Use this constructor in com.dream_team.nsu_timetable_server.service.parser
-    public SpecCourse(String name, int blockNumber, int courseNumber) {
+    public SpecCourse(@NonNull String name, int blockNumber, int courseNumber) {
         this.name = name;
         this.blockNumber = blockNumber;
         this.courseNumber = courseNumber;
-    }
-
-    public SpecCourse() {
-
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getBlockNumber() {
-        return blockNumber;
-    }
-
-    public void setBlockNumber(int blockNumber) {
-        this.blockNumber = blockNumber;
-    }
-
-    public int getCourseNumber() {
-        return courseNumber;
-    }
-
-    public void setCourseNumber(int courseNumber) {
-        this.courseNumber = courseNumber;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof SpecCourse)) return false;
-        SpecCourse that = (SpecCourse) o;
-        return id == that.id && name.equals(that.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name);
     }
 }

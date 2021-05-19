@@ -1,7 +1,16 @@
 package com.dream_team.nsu_timetable_server.model;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.Cascade;
+
 import javax.persistence.*;
 
+@Data
+@NoArgsConstructor
+@RequiredArgsConstructor
 @Entity
 public class GroupTimetable {
 
@@ -10,37 +19,12 @@ public class GroupTimetable {
     private int id;
 
     @Column(nullable = false)
+    @NonNull
     private TimetableRecord record;
 
     @OneToOne
     @JoinColumn(name = "group_id")
+    @NonNull
     private Group group;
 
-    public GroupTimetable() {
-    }
-
-    public GroupTimetable(TimetableRecord record, Group group) {
-        this.record = record;
-        this.group = group;
-    }
-
-    public TimetableRecord getRecord() {
-        return record;
-    }
-
-    public void setRecord(TimetableRecord record) {
-        this.record = record;
-    }
-
-    public Group getGroup() {
-        return group;
-    }
-
-    public void setGroup(Group group) {
-        this.group = group;
-    }
-
-    public int getId() {
-        return id;
-    }
 }
