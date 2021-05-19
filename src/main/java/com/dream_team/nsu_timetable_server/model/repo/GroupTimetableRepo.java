@@ -10,8 +10,8 @@ import java.util.List;
 
 public interface GroupTimetableRepo extends JpaRepository<GroupTimetable, Integer> {
     @Query("""
-            select timetable.record as timetableRecord from GroupTimetable timetable
-                where timetable.group.groupNumber = :group_number
+            select timetable.record from GroupTimetable timetable
+                where timetable.group.groupNumber = ?1
             """)
-    List<TimetableRecord> findTimetableRecordsByGroup(@Param("group_number") Integer groupNumber);
+    List<TimetableRecord> findTimetableRecordsByGroup(Integer groupNumber);
 }
