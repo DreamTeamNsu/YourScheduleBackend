@@ -140,7 +140,7 @@ public class Parser {
                         //Get Lesson
                         Element lessonTypeElement = currentCellContent.getElementsByAttributeValueContaining("class", "type").first();
                         LessonType lessonType = parseLessonTypeFromElement(lessonTypeElement);
-                        String name = currentCellContent.selectFirst("div[class=\"subject\"]").attr("data-original-title");
+                        String name = currentCellContent.selectFirst("div[class=\"subject\"]").attr("title");
                         Element teacherElement = currentCellContent.selectFirst("a[class=\"tutor\"]");
                         String teacher = teacherElement == null ? null : teacherElement.text();
                         Element roomAndBuildingElement = currentCellContent.getElementsByAttributeValue("class", "\"room\"").first();
@@ -210,7 +210,7 @@ public class Parser {
     }
 
     private LessonType parseLessonTypeFromElement(Element lessonTypeElement) {
-        return switch (lessonTypeElement.attr("data-original-title")) {
+        return switch (lessonTypeElement.attr("title")) {
             case "практическое занятие" -> LessonType.SEMINAR;
             case "лекция" -> LessonType.LECTURE;
             case "лабораторное занятие" -> LessonType.LAB;
