@@ -9,9 +9,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface GroupTimetableRepo extends JpaRepository<GroupTimetable, Integer> {
-    @Query("""
-            select timetable.record from GroupTimetable timetable
-                where timetable.group.groupNumber = ?1
-            """)
+    @Query("select timetable.record from GroupTimetable timetable where timetable.group.groupNumber = ?1")
     List<TimetableRecord> findTimetableRecordsByGroup(Integer groupNumber);
 }
