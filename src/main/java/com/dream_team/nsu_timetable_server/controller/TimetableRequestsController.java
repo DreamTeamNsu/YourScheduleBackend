@@ -18,8 +18,12 @@ import java.util.stream.Collectors;
 @RequestMapping("/api")
 public class TimetableRequestsController {
 
+    private final TimetableRequestsService service;
+
     @Autowired
-    private TimetableRequestsService service;
+    public TimetableRequestsController(TimetableRequestsService service) {
+        this.service = service;
+    }
 
     @GetMapping("/get/groups")
     public @ResponseBody
