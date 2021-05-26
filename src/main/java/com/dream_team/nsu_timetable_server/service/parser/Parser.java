@@ -236,11 +236,24 @@ public class Parser {
     }
 
     private LessonType parseLessonTypeFromElement(Element lessonTypeElement) {
-        LessonType lessonType = switch (lessonTypeElement.attr("title")) {
-            case "практическое занятие" -> LessonType.SEMINAR;
-            case "лекция" -> LessonType.LECTURE;
-            case "лабораторное занятие" -> LessonType.LAB;
-            default -> LessonType.UNKNOWN;
+        LessonType lessonType;
+        switch (lessonTypeElement.attr("title")) {
+            case "практическое занятие" : {
+                lessonType = LessonType.SEMINAR;
+                break;
+            }
+            case "лекция" : {
+                lessonType = LessonType.LECTURE;
+                break;
+            }
+            case "лабораторное занятие" : {
+                lessonType = LessonType.LAB;
+                break;
+            }
+            default : {
+                lessonType = LessonType.UNKNOWN;
+                break;
+            }
         };
         //System.out.println(lessonTypeElement.attr("title"));
         return lessonType;
