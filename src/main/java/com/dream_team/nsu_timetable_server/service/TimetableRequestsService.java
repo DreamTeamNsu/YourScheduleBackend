@@ -31,7 +31,7 @@ public class TimetableRequestsService {
     private SpecTimetableRepo specTimetableRepo;
 
     @Transactional
-    public Iterable<Group> getGroups() {
+    public List<Group> getGroups() {
         return groupsRepo.findAll();
     }
 
